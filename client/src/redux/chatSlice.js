@@ -24,7 +24,18 @@ const chatSlice = createSlice({
       state.messages = action.payload
     },
     addMessage: (state, action) => {
-      state.messages.push(action.payload)
+      if (!state.messages.some((msg) => msg._id === action.payload._id)) {
+        state.messages.push(action.payload)
+      }
+    },
+    updateMessage: (state, action) => {
+      const message = state.messages.find(m => m._id === action.payload._id)
+      if (message) {
+        message.content = action.payload.content
+      }
+    },
+    deleteMessage: (state, action) => {
+      state.messages = state.messages.filter(m => m._id !== action.payload)
     },
     updateMessageStatus: (state, action) => {
       const message = state.messages.find(m => m._id === action.payload.messageId)
@@ -71,6 +82,8 @@ export const {
   setLoading,
   setError,
   clearError,
+  updateMessage,
+  deleteMessage,
 } = chatSlice.actions
 
 export default chatSlice.reducer

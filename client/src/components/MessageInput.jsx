@@ -4,13 +4,19 @@ import EmojiPicker from 'emoji-picker-react'
 export default function MessageInput({ onSendMessage }) {
   const [message, setMessage] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [isSending, setIsSending] = useState(false)
   const fileInputRef = useRef(null)
 
-  const handleSend = () => {
-    if (message.trim()) {
-      onSendMessage(message, 'text')
+  const handleSend = async () => {
+    if (!message.trim() || isSending) return
+
+    setIsSending(true)
+    try {
+      await onSendMessage(message, 'text')
       setMessage('')
       setShowEmojiPicker(false)
+    } finally {
+      setIsSending(false)
     }
   }
 
@@ -29,8 +35,8 @@ export default function MessageInput({ onSendMessage }) {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
-        onSendMessage(`Shared an image`, 'image', reader.result)
+      reader.onloadend = async () => {
+        await onSendMessage(`Shared an image`, 'image', reader.result)
       }
       reader.readAsDataURL(file)
     }
@@ -40,8 +46,8 @@ export default function MessageInput({ onSendMessage }) {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
-        onSendMessage(`Shared a PDF`, 'pdf', reader.result)
+      reader.onloadend = async () => {
+        await onSendMessage(`Shared a PDF`, 'pdf', reader.result)
       }
       reader.readAsDataURL(file)
     }
@@ -94,7 +100,7 @@ export default function MessageInput({ onSendMessage }) {
 
           <button
             onClick={handleSend}
-            disabled={!message.trim()}
+            disabled={!message.trim() || isSending}
             className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
             title="Send message"
           >

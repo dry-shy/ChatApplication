@@ -62,6 +62,12 @@ export default function Sidebar({ conversations, onSelectConversation, currentCo
         >
           {searchMode ? 'Back to Chats' : 'Search Users'}
         </button>
+        <button
+          onClick={() => navigate('/settings')}
+          className="w-full mt-2 py-2 px-3 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition"
+        >
+          Settings
+        </button>
       </div>
 
       {/* Content */}
@@ -76,6 +82,7 @@ export default function Sidebar({ conversations, onSelectConversation, currentCo
             conversations={conversations}
             onSelectConversation={onSelectConversation}
             currentConversation={currentConversation}
+            currentUserId={user?._id || user?.id}
           />
         )}
       </div>

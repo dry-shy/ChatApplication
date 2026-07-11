@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { messageAPI } from '../hooks/useApi'
 import MessageList from './MessageList'
 import MessageInput from './MessageInput'
-import { addMessage } from '../redux/chatSlice'
+import { addMessage, updateMessage, deleteMessage } from '../redux/chatSlice'
 import toast from 'react-hot-toast'
 
 export default function ChatWindow({ conversation, onSendMessage }) {
@@ -11,14 +11,17 @@ export default function ChatWindow({ conversation, onSendMessage }) {
   const { user } = useSelector(state => state.auth)
   const dispatch = useDispatch()
   const [recipientInfo, setRecipientInfo] = useState(null)
+  const currentUserId = user?._id || user?.id
 
   useEffect(() => {
     // Get recipient info from messages
     if (messages.length > 0) {
-      const otherUser = messages[0].sender._id === user.id ? messages[0].receiver : messages[0].sender
+      const otherUser = messages[0].sender._id === currentUserId ? messages[0].receiver : messages[0].sender
       setRecipientInfo(otherUser)
+    } else {
+      setRecipientInfo(null)
     }
-  }, [messages, user])
+  }, [messages, currentUserId])
 
   const handleSendMessage = async (content, messageType = 'text', mediaUrl = null) => {
     try {
@@ -34,6 +37,28 @@ export default function ChatWindow({ conversation, onSendMessage }) {
       onSendMessage(message)
     } catch (error) {
       toast.error('Failed to send message')
+      console.error(error)
+    }
+  }
+
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      await messageAPI.deleteMessage(messageId)
+      dispatch(deleteMessage(messageId))
+      toast.success('Message deleted')
+    } catch (error) {
+      toast.error('Failed to delete message')
+      console.error(error)
+    }
+  }
+
+  const handleRenameMessage = async (messageId, content) => {
+    try {
+      const response = await messageAPI.updateMessage(messageId, content)
+      dispatch(updateMessage(response.data.message))
+      toast.success('Message updated')
+    } catch (error) {
+      toast.error('Failed to update message')
       console.error(error)
     }
   }
@@ -56,7 +81,12 @@ export default function ChatWindow({ conversation, onSendMessage }) {
       </div>
 
       {/* Messages */}
-      <MessageList messages={messages} currentUserId={user.id} />
+      <MessageList
+        messages={messages}
+        currentUserId={currentUserId}
+        onDeleteMessage={handleDeleteMessage}
+        onRenameMessage={handleRenameMessage}
+      />
 
       {/* Input */}
       <MessageInput onSendMessage={handleSendMessage} />

@@ -138,17 +138,22 @@ export const searchUsers = async (req, res) => {
   try {
     const { query } = req.query;
 
-    if (!query) {
-      return res.status(400).json({ message: 'Search query is required' });
+    if (!query?.trim()) {
+      return res.status(200).json({ success: true, users: [] });
     }
+
+    const searchQuery = query.trim()
 
     const users = await User.find({
       $or: [
-        { username: { $regex: query, $options: 'i' } },
-        { email: { $regex: query, $options: 'i' } },
+        { username: { $regex: searchQuery, $options: 'i' } },
+        { email: { $regex: searchQuery, $options: 'i' } },
       ],
       _id: { $ne: req.userId },
-    }).select('username email avatar isOnline');
+    })
+      .select('username email avatar isOnline')
+      .limit(50)
+      .lean();
 
     res.json({
       success: true,

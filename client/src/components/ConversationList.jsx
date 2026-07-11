@@ -1,8 +1,8 @@
 import React from 'react'
 
-export default function ConversationList({ conversations, onSelectConversation, currentConversation }) {
+export default function ConversationList({ conversations, onSelectConversation, currentConversation, currentUserId }) {
   const getOtherUser = (conversation) => {
-    return conversation.participants.find(p => p._id !== currentConversation)
+    return conversation.participants.find(p => p._id !== currentUserId)
   }
 
   if (conversations.length === 0) {

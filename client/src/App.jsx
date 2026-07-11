@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ChatPage from './pages/ChatPage'
+import Settings from './pages/Settings'
 import './App.css'
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/chat" />} />
         <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/chat" />} />
         <Route path="/chat" element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />} />
+        <Route path="/settings" element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} />
         <Route path="/" element={isAuthenticated ? <Navigate to="/chat" /> : <Navigate to="/login" />} />
       </Routes>
     </Router>

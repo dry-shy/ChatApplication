@@ -20,7 +20,7 @@ export const authAPI = {
   logout: () => api.post('/auth/logout'),
   getProfile: () => api.get('/auth/profile'),
   updateProfile: (data) => api.put('/auth/profile', data),
-  searchUsers: (query) => api.get('/auth/search', { params: { query } }),
+  searchUsers: (query, config = {}) => api.get('/auth/search', { params: { query }, ...config }),
   getOnlineUsers: () => api.get('/auth/online-users'),
 }
 
@@ -28,6 +28,7 @@ export const messageAPI = {
   sendMessage: (data) => api.post('/messages/send', data),
   getMessages: (receiverId, page = 1) =>
     api.get('/messages/get', { params: { receiverId, page } }),
+  updateMessage: (messageId, content) => api.put('/messages/update', { messageId, content }),
   markAsRead: (messageId) => api.post('/messages/mark-read', { messageId }),
   markAsSeen: (messageId) => api.post('/messages/mark-seen', { messageId }),
   getConversations: () => api.get('/messages/conversations'),
