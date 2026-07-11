@@ -328,6 +328,21 @@ npm run build   # Build for production
 npm run preview # Preview production build
 ```
 
+### Screenshot
+
+ ## Login Page
+
+![Login](login-page.png)
+
+## Sign Up Page
+
+![Signup](sign-in.png)
+
+
+## Chat Page
+
+![Chat](message.png)
+
 ## Troubleshooting
 
 ### Connection Issues
