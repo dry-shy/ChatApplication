@@ -334,9 +334,9 @@ npm run preview # Preview production build
 
 ![Login](login-page.png)
 
-## Sign Up Page
+## Sign In Page
 
-![Signup](sign-in.png)
+![Signin](sign-in.png)
 
 
 ## Chat Page
